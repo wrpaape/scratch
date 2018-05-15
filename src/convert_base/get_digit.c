@@ -1,12 +1,14 @@
 #include "base_map.h" // declarations
+#include "limits.h"   // UCHAR_MAX
 
-#include "limits.h" // UCHAR_MAX
+#if (UCHAR_MAX <= 255)
+#	define FULL_TABLE 1
+#else
+#	define FULL_TABLE 0
+#endif
 
 
-static const unsigned char invalid_base = UCHAR_MAX;
-
-static const unsigned char base_map[UCHAR_MAX + 1] = {
-        ['0'] = 0,
+static const unsigned char digit_table[UCHAR_MAX + 1] = {
         ['1'] = 1,
         ['2'] = 2,
         ['3'] = 3,
@@ -44,8 +46,20 @@ static const unsigned char base_map[UCHAR_MAX + 1] = {
         ['Y'] = ['y'] = 34,
         ['Z'] = ['z'] = 35,
 
-        ['\0'	 ... '0' - 1  ] = invalid_base,
-        ['9' + 1 ... 'A' - 1  ] = invalid_base,
-        ['Z' + 1 ... 'a' - 1  ] = invalid_base,
-        ['z' + 1 ... UCHAR_MAX] = invalid_base
+        ['\0'	 ... '0'      ] = UCHAR_MAX,
+        ['9' + 1 ... 'A' - 1  ] = UCHAR_MAX,
+        ['Z' + 1 ... 'a' - 1  ] = UCHAR_MAX
+#if FULL_TABLE
+      , ['z' + 1 ... UCHAR_MAX] = UCHAR_MAX
+#endif
 };
+
+unsigned char
+get_digit(unsigned char token)
+{
+#if !FULL_TABLE
+	if (token > 'z')
+		return UCHAR_MAX;
+#endif
+	return digit_table[token];
+}

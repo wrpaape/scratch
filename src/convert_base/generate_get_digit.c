@@ -3,12 +3,13 @@
 #include <stdio.h>   /* FILE, print utilities */
 #include <string.h>  /* strerro */
 #include <stdlib.h>  /* exit */
+#include <errno.h>   /* errno */
 
 #if (UCHAR_MAX <= 255)
-#	define CHECK_BOUNDS    0
+#	define FULL_TABLE      1
 #	define DIGIT_TABLE_MAX ((unsigned int) UCHAR_MAX)
 #else
-#	define CHECK_BOUNDS    1
+#	define FULL_TABLE      1
 #	define DIGIT_TABLE_MAX 'z'
 #endif
 
@@ -17,13 +18,14 @@
 
 
 static FILE *output;
+static char *path;
 static int cell_width;
 static int line_width; /* not including tab or newline */
 static int rem_line_width;
 static int room_for_another_cell;
 
 
-inline void
+void
 open_output(int   argc,
 	    char *argv[])
 {
@@ -33,7 +35,7 @@ open_output(int   argc,
 		exit(1);
 	}
 
-	const char *path = argv[1];
+	path   = argv[1];
 	output = fopen(path, "w");
 
 	if (output == NULL) {
@@ -45,7 +47,7 @@ open_output(int   argc,
 	}
 }
 
-inline void
+void
 put_header()
 {
 	time_t now = time(NULL);
@@ -55,7 +57,7 @@ put_header()
 		"\n * token -> value lookup table for convert_base (DO NOT MODIFY)"
 		"\n *"
 		"\n * generated on: %s" /* terminated with  */
-		"\n * ============================================================================="
+		"\n ******************************************************************************/"
 		"\n#include \"get_digit.h\" /* declarations */"
 		"\n#include \"limits.h\"    /* UCHAR_MAX */"
 		"\n"
@@ -70,7 +72,7 @@ put_header()
 
 }
 
-inline void
+void
 set_table_format()
 {
 	cell_width = snprintf(NULL, 0, "%u", DIGIT_TABLE_MAX);
@@ -87,7 +89,7 @@ set_table_format()
 	room_for_another_cell = cell_width + 2;
 }
 
-inline void
+void
 put_next_digit(unsigned int digit)
 {
 	static const char *delim = "\n\t";
@@ -111,7 +113,7 @@ put_next_digit(unsigned int digit)
 	}
 }
 
-inline void
+void
 put_table_close()
 {
 	int status = fputs(
@@ -120,7 +122,7 @@ put_table_close()
 		"\nunsigned char"
 		"\nget_digit(unsigned char token)"
 		"\n{"
-#if CHECK_BOUNDS
+#if !FULL_TABLE
 		"\n\tif (token > 'z')"
 		"\n\t\treturn UCHAR_MAX;"
 		"\n"
@@ -135,7 +137,7 @@ put_table_close()
 	}
 }
 
-inline void
+void
 close_output()
 {
 	if (fclose(output) != 0) {
@@ -151,14 +153,29 @@ int
 main(int   argc,
      char *argv[])
 {
-	open_output();
+	open_output(argc, argv);
 
 	put_header();
 
 	set_table_format();
 
-	for (unsigned int digit = '\0'; digit <= DIGIT_TABLE_MAX; ++digit)
-		put_next_digit(digit);
+	unsigned int digit;
+	unsigned int base;
+
+	for (digit = '\0'; digit <= '0'; ++digit)
+		put_next_digit(UCHAR_MAX);
+	for (; digit <= '9'; ++digit)
+		put_next_digit(digit & 15u);
+	for (; digit < 'A'; ++digit)
+		put_next_digit(UCHAR_MAX);
+	for (base = 10; digit <= 'Z'; ++digit, ++base)
+		put_next_digit(base);
+	for (; digit < 'a'; ++digit)
+		put_next_digit(UCHAR_MAX);
+	for (base = 10; digit <= 'z'; ++digit, ++base)
+		put_next_digit(base);
+	for (; digit <= DIGIT_TABLE_MAX; ++digit)
+		put_next_digit(UCHAR_MAX);
 
 	put_table_close();
 

@@ -9,23 +9,23 @@ set(PROJECT_CMAKE_HAVE_C_ARRAY_RANGE_INITIALIZER_INCLUDED TRUE)
 # External API
 # ------------------------------------------------------------------------------
 function(set_have_c_array_range_initializer)
-    set(build_dir ${PROJECT_CMAKE_BUILD_DIR}/have_c_range_initializer)
-    set(src_dir   ${PROJECT_CMAKE_SRC_DIR}/have_c_range_initializer)
+    set(build_dir ${PROJECT_CMAKE_BUILD_DIR}/have_c_array_range_initializer)
+    set(src_dir   ${PROJECT_CMAKE_SRC_DIR}/have_c_array_range_initializer)
     try_run(
         exit_code
         compiled
         ${build_dir}
-        ${src_dir}/test_have_c_range_initializer.c
+        ${src_dir}/test_have_c_array_range_initializer.c
     )
 
     # check if range initializers compile and work as expected
     if(compiled AND ("${exit_code}" EQUAL 0))
-        set(have_c_range_initializer TRUE)
+        set(have_c_array_range_initializer TRUE)
     else()
-        set(have_c_range_initializer FALSE)
+        set(have_c_array_range_initializer FALSE)
     endif()
 
-    set(HAVE_C_ARRAY_RANGE_INITIALIZER ${have_c_range_initializer} PARENT_SCOPE)
+    set(HAVE_C_ARRAY_RANGE_INITIALIZER ${have_c_array_range_initializer} PARENT_SCOPE)
 endfunction()
 
 set_have_c_array_range_initializer()

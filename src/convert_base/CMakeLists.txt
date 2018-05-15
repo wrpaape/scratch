@@ -18,6 +18,7 @@ else()
         OUTPUT            ${get_digit}
         COMMAND           generate_get_digit ${get_digit}
         COMMENT           "generate get_digit.c"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     )
 endif()
 
