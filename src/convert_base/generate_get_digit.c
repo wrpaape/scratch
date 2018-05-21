@@ -56,8 +56,8 @@ put_header()
 		  "/**"
 		"\n * token -> value lookup table for convert_base (DO NOT MODIFY)"
 		"\n *"
-		"\n * generated on: %s" /* terminated with  */
-		"\n ******************************************************************************/"
+		"\n * generated on: %s" /* terminated with \n */
+		  " ******************************************************************************/"
 		"\n#include \"get_digit.h\" /* declarations */"
 		"\n#include \"limits.h\"    /* UCHAR_MAX */"
 		"\n"
@@ -162,7 +162,7 @@ main(int   argc,
 	unsigned int digit;
 	unsigned int base;
 
-	for (digit = '\0'; digit <= '0'; ++digit)
+	for (digit = '\0'; digit < '0'; ++digit)
 		put_next_digit(UCHAR_MAX);
 	for (; digit <= '9'; ++digit)
 		put_next_digit(digit & 15u);
