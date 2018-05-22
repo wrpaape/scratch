@@ -1,5 +1,5 @@
 #include "get_digit.h" // declarations
-#include "limits.h"    // UCHAR_MAX
+#include <limits.h>    // UCHAR_MAX
 
 #if (UCHAR_MAX <= 255)
 #	define FULL_TABLE 1

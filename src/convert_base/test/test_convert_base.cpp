@@ -3,6 +3,7 @@
 #include <cstring>        // strlen
 #include <climits>        // UCHAR_MAX
 
+
 TEST(test_convert_base, base_validity)
 {
     char        output[128] = { '\0' };
@@ -20,6 +21,18 @@ TEST(test_convert_base, base_validity)
     for (input_base = 36 + 1; input_base <= UCHAR_MAX; ++input_base)
         EXPECT_LT(convert_base(output, 10,
                                input,   input_base), 0);
+}
+
+
+TEST(test_convert_base, empty)
+{
+    char output[128] = { '\0' };
+
+    for (unsigned int input_base = 1; input_base <= 36; ++input_base) {
+        ASSERT_EQ(0, convert_base(output, 10,
+                                  "",     input_base));
+        ASSERT_STREQ("", output);
+    }
 }
 
 
