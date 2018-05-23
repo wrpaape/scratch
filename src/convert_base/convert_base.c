@@ -1,19 +1,6 @@
 #include "convert_base.h" /* convert_base() */
 #include "get_digit.h"	  /* get_digit() */
-#include <limits.h>	  /* *_MAX */
-
-#define ACC_MAX	ULONG_MAX
-typedef unsigned long acc_type;
-#if   ((UINT_MAX  * 2) <= ACC_MAX)
-#	define WORD_MAX UINT_MAX
-	typedef unsigned int   word_type;
-#elif ((USHRT_MAX * 2) <= ACC_MAX)
-#	define WORD_MAX USHRT_MAX
-	typedef unsigned short word_type;
-#else
-#	define WORD_MAX (ACC_MAX / 2)
-	typedef acc_type       word_type;
-#endif
+#include <limits.h>	  /* UINT_MAX */
 
 static const char token_table[] = {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
@@ -26,50 +13,75 @@ int
 convert_base(char       *output, unsigned char output_base,
 	     const char *input,  unsigned char input_base)
 {
+	unsigned int acc_output;
+	unsigned int input_mag;
+	unsigned int output_digit;
+	unsigned int input_token;
+	unsigned int input_digit;
+
 	if (*input == '\0') {
 		*output = '\0';
 		return 0;
 	}
 
-	if (input_base > 36)
+	if (   (input_base  > 36) || (input_base  < 2)
+	    || (output_base > 36) || (output_base < 2))
 		return -1;
 
-	const unsigned char *restrict i_ptr = (const unsigned char *) input;
+	const unsigned int max_input_mag = UINT_MAX / input_base;
 
-	while (*++i_ptr != '\0')
+	char *restrict		      output_ptr = output;
+	const unsigned char *restrict input_ptr = (const unsigned char *) input;
+
+	while (*++input_ptr != '\0')
 		; /* start at least significant digit */
 
-	size_t input_length = (i_ptr - input);
-
-
-	word_type *restrict o_word_ptr = (word_type *) output;
-
-	acc_type o_acc = 0;
-	acc_type i_mag  = 1;
-
-	do {
-		unsigned char i_digit = get_digit(*--i_ptr);
-		if (i_digit >= i_base) {
+	acc_output = 0;
+	input_mag  = 1;
+	while (1) {
+		input_token = *--input_ptr;
+		input_digit = get_digit(input_token);
+		if (input_digit >= input_base) {
 			return -2; /* input contains out-of-bounds token */
 		}
-		o_acc += (i_digit * i_mag);
-		i_mag *= i_base;
-		if (i_mag > WORD_MAX) {
-			i_mag	      = 1;
-			*o_word_ptr++ = (word_type) (o_acc % WORD_MAX);
-			o_acc	     /= WORD_MAX;
+
+		acc_output += (input_digit * input_mag);
+
+		if (((const char *) input_ptr) == input)
+			break;
+
+		input_mag *= input_base;
+		if (input_mag > max_input_mag) {
+			while (1) {
+				unsigned int next_mag = input_mag / output_base;
+				if (next_mag == 0)
+					break;
+				input_mag = next_mag;
+
+				output_digit  = acc_output % output_base;
+				acc_output   /= output_base;
+				*output_ptr++ = token_table[output_digit];
+			}
 		}
+	}
 
-		if (o_acc >= WORD_MAX) {
-			word_type o_word = o_acc % WORD_MAX;
+	/* place most significant digits */
+	while (acc_output > 0) {
+		output_digit  = acc_output % output_base;
+		acc_output   /= output_base;
+		*output_ptr++ = token_table[output_digit];
+	}
 
-			o_acc = 1;
-			i_mag = 1;
-		}
+	*output_ptr = '\0';
 
-	} while (i_ptr > input);
+	int output_length = (output_ptr - output);
 
-	uint64_t acc = 0;
+	/* reverse output */
+	do {
+		char tmp    = *--output_ptr;
+		*output_ptr = *output;
+		*output++   = tmp;
+	} while (output_ptr > output);
 
 	return output_length;
-
+}
