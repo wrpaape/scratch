@@ -180,7 +180,7 @@ TEST(test_convert_base, to_decimal)
 
     EXPECT_EQ(strlen(expected_output),
               convert_base(output, 10,
-                           input,   8));
+                           input,  16));
     EXPECT_STREQ(expected_output, output);
 }
 

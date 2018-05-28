@@ -1,6 +1,7 @@
 #include "convert_base.h" /* convert_base() */
 #include "get_digit.h"	  /* get_digit() */
 #include <limits.h>	  /* UINT_MAX */
+#include <string.h>	  /* memset() */
 
 static const char token_table[] = {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
@@ -31,10 +32,16 @@ convert_base(char       *output, unsigned char output_base,
 	const unsigned int max_input_mag = UINT_MAX / input_base;
 
 	char *restrict		      output_ptr = output;
-	const unsigned char *restrict input_ptr = (const unsigned char *) input;
+	const unsigned char *restrict input_ptr  = (const unsigned char *) input;
 
 	while (*++input_ptr != '\0')
 		; /* start at least significant digit */
+
+/* 	size_t input_length = (input_ptr - output_ptr); */
+/* 	size_t max_output_digits = get_max_digits(input_length, */
+/* 						  input_base, */
+/* 						  output_base); */
+/* 	(void) memset(output, 0, max_output_digits + 1) */ 
 
 	acc_output = 0;
 	input_mag  = 1;
@@ -74,7 +81,7 @@ convert_base(char       *output, unsigned char output_base,
 
 	*output_ptr = '\0';
 
-	int output_length = (output_ptr - output);
+	int output_length = (int) (output_ptr - output);
 
 	/* reverse output */
 	do {
