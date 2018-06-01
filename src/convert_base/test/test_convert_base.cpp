@@ -5,24 +5,6 @@
 
 #define ENABLE_UNARY 0
 
-TEST(test_convert_base, get_max_digits)
-{
-    char        output[128] = { '\0' };
-    const char *input;
-    unsigned int input_base;
-
-    input = "0000000000";
-    EXPECT_LT(convert_base(output, 10,
-                           input,   0), 0);
-
-    for (input_base = 2; input_base <= 36; ++input_base)
-        EXPECT_GE(convert_base(output, 10,
-                               input,   input_base), 0);
-
-    for (input_base = 36 + 1; input_base <= UCHAR_MAX; ++input_base)
-        EXPECT_LT(convert_base(output, 10,
-                               input,   input_base), 0);
-}
 
 TEST(test_convert_base, base_validity)
 {
@@ -181,9 +163,9 @@ TEST(test_convert_base, to_octal)
 
 TEST(test_convert_base, from_decimal)
 {
-    char        output[128]     = { '\0' };
+    char        output[256]     = { '\0' };
     const char *input           = "340282366920938463463374607431768211455";
-    std::string expected_output('1', 127);
+    std::string expected_output(127, '1');
 
     EXPECT_EQ(expected_output.length(),
               convert_base(output,  2,

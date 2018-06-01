@@ -10,7 +10,7 @@ multiply(unsigned char *output,
 	unsigned long carry = 0;
 
 	do {
-		carry  += *output++ * multiplier;
+		carry  += *output * multiplier;
 		*output = carry % output_base;
 		carry  /= output_base;
 	} while (++output < output_end);
