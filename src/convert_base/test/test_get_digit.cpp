@@ -1,5 +1,5 @@
 #include "gtest/gtest.h" // TEST, ASSERT_*
-#include "get_digit.h"   // convert_base()
+#include "get_digit.h"   // get_digit()
 #include "limits.h"      // UCHAR_MAX
 
 TEST(test_get_digit, mapping_is_correct)

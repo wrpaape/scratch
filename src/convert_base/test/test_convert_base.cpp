@@ -5,6 +5,25 @@
 
 #define ENABLE_UNARY 0
 
+TEST(test_convert_base, get_max_digits)
+{
+    char        output[128] = { '\0' };
+    const char *input;
+    unsigned int input_base;
+
+    input = "0000000000";
+    EXPECT_LT(convert_base(output, 10,
+                           input,   0), 0);
+
+    for (input_base = 2; input_base <= 36; ++input_base)
+        EXPECT_GE(convert_base(output, 10,
+                               input,   input_base), 0);
+
+    for (input_base = 36 + 1; input_base <= UCHAR_MAX; ++input_base)
+        EXPECT_LT(convert_base(output, 10,
+                               input,   input_base), 0);
+}
+
 TEST(test_convert_base, base_validity)
 {
     char        output[128] = { '\0' };
