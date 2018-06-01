@@ -165,7 +165,7 @@ TEST(test_convert_base, from_decimal)
 {
     char        output[256]     = { '\0' };
     const char *input           = "340282366920938463463374607431768211455";
-    std::string expected_output(127, '1');
+    std::string expected_output(128, '1');
 
     EXPECT_EQ(expected_output.length(),
               convert_base(output,  2,

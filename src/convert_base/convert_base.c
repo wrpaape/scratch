@@ -41,18 +41,21 @@ convert_base(char       *output, unsigned char output_base,
 	/* zero out output + terminating NUL */
 	(void) memset(output, '\0', max_digits + 1);
 
-	const unsigned long max_acc = (ULONG_MAX - input_base) / input_base;
+	const unsigned long mag_limit = ULONG_MAX
+				    / (input_base * (input_base - 1));
 
-	unsigned long acc = 0;
+	unsigned long input_mag = 1;
+	unsigned long acc       = 0;
 	do {
 		unsigned char input_digit = get_digit(*input_ptr);
 		if (input_digit >= input_base) {
 			return -2; /* out-of-bounds token */
 		}
 
+		input_mag *= input_base;
 		acc *= input_base;
 		acc += input_digit;
-	} while ((++input_ptr < input_end) && (acc <= max_acc));
+	} while ((++input_ptr < input_end) && (input_mag <= mag_limit));
 
 	unsigned char *restrict output_begin = (unsigned char *) output;
 	unsigned char *restrict output_end   = add(output_begin,
@@ -60,8 +63,8 @@ convert_base(char       *output, unsigned char output_base,
 						   acc);
 
 	while (input_ptr < input_end) {
-		unsigned long input_mag = 1;
-		acc			= 0;
+		input_mag = 1;
+		acc       = 0;
 		do {
 			unsigned char input_digit = get_digit(*input_ptr);
 			if (input_digit >= input_base) {
@@ -71,7 +74,7 @@ convert_base(char       *output, unsigned char output_base,
 			input_mag *= input_base;
 			acc *= input_base;
 			acc += input_digit;
-		} while ((++input_ptr < input_end) && (acc <= max_acc));
+		} while ((++input_ptr < input_end) && (input_mag <= mag_limit));
 
 		output_end = multiply(output_begin,
 				      output_base,
