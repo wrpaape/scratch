@@ -18,10 +18,12 @@ long
 convert_base(char       *output, unsigned char output_base,
 	     const char *input,  unsigned char input_base)
 {
-	if (   (input_base  > 36) || (input_base  < 2)
-	    || (output_base > 36) || (output_base < 2))
+	/* validate `input_base` and `output_base` */
+	if (   (input_base  < 2) || (input_base  > 36)
+	    || (output_base < 2) || (output_base > 36))
 		return LONG_MIN;
 
+	/* ensure input contains at least one digit before continuing */
 	if (*input == '\0') {
 		*output = '\0';
 		return 0;
@@ -41,59 +43,70 @@ convert_base(char       *output, unsigned char output_base,
 	/* zero out output + terminating NUL */
 	(void) memset(output, '\0', max_digits + 1);
 
-	const unsigned long mag_limit = ULONG_MAX
-				      / (input_base * (output_base - 1));
+	/* limit the value of the magnitude of the next collected accumulator
+	 * `acc` to avoid numerical overflow
+	 */
+	const unsigned long acc_mag_limit = ULONG_MAX
+				          / (input_base * output_base);
 
-	unsigned long input_mag = 1;
-	unsigned long acc       = 0;
+	/* collect the first accumulator */
+	unsigned long acc_mag = 1;
+	unsigned long acc     = 0;
 	do {
 		unsigned char input_digit = get_digit(*input_ptr++);
 		if (input_digit >= input_base) /* out-of-bounds token */
 			return input - ((char *) input_ptr);
 
-		input_mag *= input_base;
+		acc_mag *= input_base;
 		acc *= input_base;
 		acc += input_digit;
-	} while ((input_ptr < input_end) && (input_mag <= mag_limit));
+	} while ((input_ptr < input_end) && (acc_mag <= acc_mag_limit));
 
+	/* add first accumulator into output */
 	unsigned char *restrict output_begin = (unsigned char *) output;
 	unsigned char *restrict output_end   = add(output_begin,
 						   output_base,
 						   acc);
 
+	/* collect remaining accumulators */
 	while (input_ptr < input_end) {
-		input_mag = 1;
-		acc       = 0;
+		acc_mag = 1;
+		acc     = 0;
 		do {
 			unsigned char input_digit = get_digit(*input_ptr++);
 			if (input_digit >= input_base) /* out-of-bounds token */
 				return input - ((char *) input_ptr);
 
-			input_mag *= input_base;
+			acc_mag *= input_base;
 			acc *= input_base;
 			acc += input_digit;
-		} while ((input_ptr < input_end) && (input_mag <= mag_limit));
+		} while ((input_ptr < input_end) && (acc_mag <= acc_mag_limit));
 
+		/* shift output by magnitude of next accumulator */
 		output_end = multiply(output_begin,
 				      output_base,
-				      input_mag,
+				      acc_mag,
 				      output_end);
 
+		/* add next accumulator into output */
 		unsigned char *restrict output_ptr = add(output_begin,
 							 output_base,
 							 acc);
+
+		/* if long addition produces a carry past the last most
+		 * significant digit of output, extend `output_end` */
 		if (output_ptr > output_end)
 			output_end = output_ptr;
 	}
 
 	long output_length = (long) (output_end - output_begin);
 
-	/* reverse output, convert to ASCII */
+	/* reverse output and convert to ASCII representation */
 	do {
-		char tmp      = token_table[*--output_end];
-		*output_end   = token_table[*output_begin];
-		*output_begin = tmp;
-	} while (output_end > ++output_begin);
+		char tmp        = token_table[*--output_end];
+		*output_end     = token_table[*output_begin];
+		*output_begin++ = tmp;
+	} while (output_end > output_begin);
 
 	return output_length;
 }

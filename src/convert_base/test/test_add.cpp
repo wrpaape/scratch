@@ -4,6 +4,22 @@
 #include <type_traits>    // std::remove_const_t
 
 
+TEST(test_add, add_zero)
+{
+    // 1234567890
+    const auto expected_output = make_array<unsigned char>(
+        0, 9, 8, 7, 6, 5, 4, 3, 2, 1
+    );
+
+    std::remove_const_t<decltype(expected_output)> output = expected_output;
+
+    unsigned char *output_end = add(output.data(), 10, 0);
+
+    EXPECT_EQ(1, output_end - output.data());
+    EXPECT_EQ(expected_output, output);
+}
+
+
 TEST(test_add, binary)
 {
     // 0b11000001000011 == 12355
@@ -19,9 +35,22 @@ TEST(test_add, binary)
 
     EXPECT_EQ(expected_output.size(), output_end - output.data());
     EXPECT_EQ(expected_output, output);
+}
 
-    output_end = add(output.data(), 2, 0);
 
-    EXPECT_EQ(1, output_end - output.data());
+TEST(test_add, decimal)
+{
+    // 130000000
+    const auto expected_output = make_array<unsigned char>(
+        0, 0, 0, 0, 0, 0, 0, 0, 3, 1
+    );
+    // 1234567890
+    std::remove_const_t<decltype(expected_output)> output = {
+        0, 9, 8, 7, 6, 5, 4, 3, 2, 1
+    };
+
+    unsigned char *output_end = add(output.data(), 10, 65432110);
+
+    EXPECT_EQ(&output.back(), output_end);
     EXPECT_EQ(expected_output, output);
 }

@@ -5,6 +5,13 @@
 extern "C" {
 #endif
 
+/**
+ * @brief     looks up the digit value associated with ASCII @p token
+ *
+ * @param[in] token an ASCII byte representing a single digit of a number string
+ *
+ * @returns   the digit value of @p token
+ */
 unsigned char
 get_digit(unsigned char token);
 

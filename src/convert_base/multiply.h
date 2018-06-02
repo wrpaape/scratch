@@ -5,6 +5,21 @@
 extern "C" {
 #endif
 
+/**
+ * @brief         multiplies @output by @p multiplier
+ *
+ * @param[in,out] output      byte string of little-endian digits containing the
+ *                            result.  Note that this is a string of raw values
+ *                            and *not* in ASCII representation.
+ * @param[in]     output_base the numerical base of the @p output
+ * @param[in]     multiplier  the value to be multiplied by
+ * @param[in]     output_end  pointer past the most significant digit of @p
+ *                            output
+ *
+ * @returns       if @p multiplier is non-zero, returns a pointer past the most
+ *                significant digit of @p output after multiplication has been
+ *                applied, otherwise returns @p output_end
+ */
 unsigned char *
 multiply(unsigned char *output,
          unsigned long	output_base,

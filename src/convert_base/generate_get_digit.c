@@ -59,7 +59,6 @@ put_header()
 		"\n * generated on: %s" /* terminated with \n */
 		  " ******************************************************************************/"
 		"\n#include \"get_digit.h\" /* declarations */"
-		"\n#include \"limits.h\"    /* UCHAR_MAX */"
 		"\n"
 		"\nstatic const unsigned char digit_table[%u] = {",
 		ctime(&now),
@@ -133,7 +132,7 @@ put_table_close()
 	);
 	if (status == EOF) {
 		perror("put_table_close() failure");
-		exit(3);
+		exit(6);
 	}
 }
 
@@ -145,7 +144,7 @@ close_output()
 			       "failed to close '%s': %s\n",
 			       path,
 			       strerror(errno));
-		exit(3);
+		exit(7);
 	}
 }
 
