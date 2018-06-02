@@ -49,8 +49,25 @@ TEST(test_add, decimal)
         0, 9, 8, 7, 6, 5, 4, 3, 2, 1
     };
 
-    unsigned char *output_end = add(output.data(), 10, 65432110);
+    unsigned char *output_end = add(output.data(), 10, 65432110ul);
 
     EXPECT_EQ(&output.back(), output_end);
+    EXPECT_EQ(expected_output, output);
+}
+
+TEST(test_add, max_base)
+{
+    // iamking == 39824652652
+    const auto expected_output = make_array<unsigned char>(
+        16, 23, 18, 20, 22, 10, 18
+    );
+    // iamkind == 39824652649
+    std::remove_const_t<decltype(expected_output)> output = {
+        13, 23, 18, 20, 22, 10, 18
+    };
+
+    unsigned char *output_end = add(output.data(), 36, 3);
+
+    EXPECT_EQ(&output[1], output_end);
     EXPECT_EQ(expected_output, output);
 }

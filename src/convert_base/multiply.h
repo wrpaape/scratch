@@ -6,13 +6,15 @@ extern "C" {
 #endif
 
 /**
- * @brief         multiplies @output by @p multiplier
+ * @brief         multiplies @p output by @p multiplier
  *
  * @param[in,out] output      byte string of little-endian digits containing the
  *                            result.  Note that this is a string of raw values
  *                            and *not* in ASCII representation.
  * @param[in]     output_base the numerical base of the @p output
- * @param[in]     multiplier  the value to be multiplied by
+ * @param[in]     multiplier  the value to be multiplied by.  To avoid
+ *                            arithmetic overflow @p multiplier should be `<=
+ *                            ULONG_MAX / (output_base - 1)`
  * @param[in]     output_end  pointer past the most significant digit of @p
  *                            output
  *
