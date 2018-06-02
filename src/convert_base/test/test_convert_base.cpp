@@ -45,6 +45,10 @@ TEST(test_convert_base, input_validity)
     result = convert_base(output,    10,
                           "100000G", 16);
     EXPECT_EQ(6, -result - 1);
+
+    result = convert_base(output,    10,
+                          "100!000", 36);
+    EXPECT_EQ(3, -result - 1);
 }
 
 
