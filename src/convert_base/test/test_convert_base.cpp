@@ -1,28 +1,50 @@
 #include "gtest/gtest.h"  // TEST, EXPECT_*
 #include "convert_base.h" // convert_base()
 #include <cstring>        // strlen
-#include <climits>        // UCHAR_MAX
-
-#define ENABLE_UNARY 0
+#include <limits>         // std::numeric_limits
 
 
 TEST(test_convert_base, base_validity)
 {
     char        output[128] = { '\0' };
     const char *input;
-    unsigned int input_base;
+    unsigned char input_base;
 
     input = "0000000000";
-    EXPECT_LT(convert_base(output, 10,
-                           input,   0), 0);
+
+    for (input_base = 0; input_base < 2; ++input_base)
+        EXPECT_EQ(std::numeric_limits<long>::min(),
+                  convert_base(output, 10,
+                               input,   input_base));
 
     for (input_base = 2; input_base <= 36; ++input_base)
         EXPECT_GE(convert_base(output, 10,
                                input,   input_base), 0);
 
-    for (input_base = 36 + 1; input_base <= UCHAR_MAX; ++input_base)
-        EXPECT_LT(convert_base(output, 10,
-                               input,   input_base), 0);
+    do {
+        EXPECT_EQ(std::numeric_limits<long>::min(),
+                  convert_base(output, 10,
+                               input,   input_base));
+    } while (input_base++ < std::numeric_limits<unsigned char>::max());
+}
+
+
+TEST(test_convert_base, input_validity)
+{
+    char output[128] = { '\0' };
+    long result;
+
+    result = convert_base(output,    10,
+                          "1000X00",  2);
+    EXPECT_EQ(4, -result - 1);
+
+    result = convert_base(output,    10,
+                          "F000000",  8);
+    EXPECT_EQ(0, -result - 1);
+
+    result = convert_base(output,    10,
+                          "100000G", 16);
+    EXPECT_EQ(6, -result - 1);
 }
 
 
@@ -43,14 +65,6 @@ TEST(test_convert_base, no_base_change)
     char        output[128] = { '\0' };
     int         output_length;
     const char *input;
-
-#if ENABLE_UNARY
-    input         = "0";
-    output_length = convert_base(output, 1,
-                                 input,  1);
-    EXPECT_EQ(strlen(input), output_length);
-    EXPECT_STREQ(input, output);
-#endif
 
     input         = "10";
     output_length = convert_base(output, 2,
@@ -82,33 +96,6 @@ TEST(test_convert_base, no_base_change)
     EXPECT_EQ(strlen(input), output_length);
     EXPECT_STRCASEEQ(input, output);
 }
-
-
-#if ENABLE_UNARY
-TEST(test_convert_base, from_unary)
-{
-    char        output[128]     = { '\0' };
-    const char *input           = "0000000000";
-    const char *expected_output = "10";
-
-    EXPECT_EQ(strlen(expected_output),
-              convert_base(output, 10,
-                           input,  1));
-    EXPECT_STREQ(expected_output, output);
-}
-
-TEST(test_convert_base, to_unary)
-{
-    char        output[128] = { '\0' };
-    const char *input       = "120";
-    std::string expected_output('0', 120);
-
-    EXPECT_EQ(expected_output.length(),
-              convert_base(output, 1,
-                           input,  10));
-    EXPECT_STREQ(expected_output.c_str(), output);
-}
-#endif
 
 
 TEST(test_convert_base, from_binary)
