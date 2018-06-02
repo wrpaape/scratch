@@ -1,6 +1,3 @@
-if(NOT BUILD_TESTING)
-    return()
-endif()
 include(have_c_array_range_initializer)
 
 set(CONVERT_BASE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
@@ -28,4 +25,17 @@ add_library(add            OBJECT add.c)
 add_library(multiply       OBJECT multiply.c)
 add_library(convert_base   OBJECT convert_base.c)
 
-add_subdirectory(test)
+add_executable(
+    base_converter
+    base_converter.cpp
+    $<TARGET_OBJECTS:convert_base>
+    $<TARGET_OBJECTS:get_digit>
+    $<TARGET_OBJECTS:get_max_digits>
+    $<TARGET_OBJECTS:add>
+    $<TARGET_OBJECTS:multiply>
+)
+target_link_libraries(base_converter ${CONVERT_BASE_LIBRARIES})
+
+if(BUILD_TESTING)
+    add_subdirectory(test)
+endif()

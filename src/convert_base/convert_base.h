@@ -15,7 +15,7 @@ extern "C" {
  *             or input contains digits outside of the set of valid digits
  *             specified by 'input_base'
  */
-int
+long
 convert_base(char       *output, unsigned char output_base,
              const char *input,  unsigned char input_base);
 

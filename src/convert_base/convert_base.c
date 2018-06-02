@@ -14,18 +14,18 @@ static const char token_table[] = {
 };
 
 
-int
+long
 convert_base(char       *output, unsigned char output_base,
 	     const char *input,  unsigned char input_base)
 {
+	if (   (input_base  > 36) || (input_base  < 2)
+	    || (output_base > 36) || (output_base < 2))
+		return LONG_MIN;
+
 	if (*input == '\0') {
 		*output = '\0';
 		return 0;
 	}
-
-	if (   (input_base  > 36) || (input_base  < 2)
-	    || (output_base > 36) || (output_base < 2))
-		return -1;
 
 	unsigned char *restrict	      input_ptr = (unsigned char *) input;
 	const unsigned char *restrict input_end = input_ptr;
@@ -42,20 +42,19 @@ convert_base(char       *output, unsigned char output_base,
 	(void) memset(output, '\0', max_digits + 1);
 
 	const unsigned long mag_limit = ULONG_MAX
-				    / (input_base * (input_base - 1));
+				      / (input_base * (output_base - 1));
 
 	unsigned long input_mag = 1;
 	unsigned long acc       = 0;
 	do {
-		unsigned char input_digit = get_digit(*input_ptr);
-		if (input_digit >= input_base) {
-			return -2; /* out-of-bounds token */
-		}
+		unsigned char input_digit = get_digit(*input_ptr++);
+		if (input_digit >= input_base) /* out-of-bounds token */
+			return input - ((char *) input_ptr);
 
 		input_mag *= input_base;
 		acc *= input_base;
 		acc += input_digit;
-	} while ((++input_ptr < input_end) && (input_mag <= mag_limit));
+	} while ((input_ptr < input_end) && (input_mag <= mag_limit));
 
 	unsigned char *restrict output_begin = (unsigned char *) output;
 	unsigned char *restrict output_end   = add(output_begin,
@@ -66,15 +65,14 @@ convert_base(char       *output, unsigned char output_base,
 		input_mag = 1;
 		acc       = 0;
 		do {
-			unsigned char input_digit = get_digit(*input_ptr);
-			if (input_digit >= input_base) {
-				return -2; /* out-of-bounds token */
-			}
+			unsigned char input_digit = get_digit(*input_ptr++);
+			if (input_digit >= input_base) /* out-of-bounds token */
+				return input - ((char *) input_ptr);
 
 			input_mag *= input_base;
 			acc *= input_base;
 			acc += input_digit;
-		} while ((++input_ptr < input_end) && (input_mag <= mag_limit));
+		} while ((input_ptr < input_end) && (input_mag <= mag_limit));
 
 		output_end = multiply(output_begin,
 				      output_base,
@@ -88,7 +86,7 @@ convert_base(char       *output, unsigned char output_base,
 			output_end = output_ptr;
 	}
 
-	int output_length = (int) (output_end - output_begin);
+	long output_length = (long) (output_end - output_begin);
 
 	/* reverse output, convert to ASCII */
 	do {

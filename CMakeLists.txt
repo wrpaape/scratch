@@ -36,5 +36,9 @@ if(BUILD_TESTING)
     add_subdirectory(test)
 endif()
 
+# set output directories
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_LIB_DIR})
+
 # enter
 add_subdirectory(src)
