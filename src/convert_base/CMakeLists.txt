@@ -12,7 +12,7 @@ else()
     # generate the 'base_map' lookup definitions source file
     add_executable(generate_get_digit generate_get_digit.c)
     add_custom_command(
-        OUTPUT            ${get_digit_source}
+        OUTPUT            ${CMAKE_CURRENT_LIST_DIR}/${get_digit_source}
         COMMAND           generate_get_digit ${get_digit_source}
         COMMENT           "generating ${get_digit_source}"
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}

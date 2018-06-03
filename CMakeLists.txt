@@ -42,3 +42,4 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_LIB_DIR})
 
 # enter
 add_subdirectory(src)
+add_subdirectory(docs)
