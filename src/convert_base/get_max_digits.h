@@ -1,6 +1,12 @@
 #ifndef CONVERT_BASE_GET_MAX_DIGITS_H
 #define CONVERT_BASE_GET_MAX_DIGITS_H
 
+/**
+ * @file
+ * @brief header declaring get_max_digits() used for sizing the result of
+ *        convert_base()
+ */
+
 #include <stddef.h> /* size_t */
 
 #ifdef __cplusplus
@@ -11,15 +17,16 @@ extern "C" {
  * @brief     used to size the result of convert_base()
  *
  * @details   Given an input number expressed in base @p input_base:
- *
- *            `a0*input_base^0 + a1*input_base^1 ...
- *            a[input_length - 1]*input_base^(input_length - 1)`
- *
+ *            @code
+ *            a0*input_base^0 + a1*input_base^1 ...
+ *            a[input_length-1]*input_base^(input_length-1)
+ *            @endcode
  *            get_max_digits() determines the maximum value of `output_length`
  *            if that number where to be expressed in base @p output_base:
- *
- *            `b0*output_base^0 + b1*output_base^1 ...
- *            b[output_length - 1]*output_base^(output_length - 1)`.
+ *            @code
+ *            b0*output_base^0 + b1*output_base^1 ...
+ *            b[output_length-1]*output_base^(output_length-1)
+ *            @endcode.
  *
  * @param[in] input_length the number of digits used to represent input
  * @param[in] input_base   the numerical base of the input

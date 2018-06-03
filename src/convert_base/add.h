@@ -1,6 +1,11 @@
 #ifndef CONVERT_BASE_ADD_H
 #define CONVERT_BASE_ADD_H
 
+/**
+ * @file
+ * @brief private header declaring add() used by convert_base()
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

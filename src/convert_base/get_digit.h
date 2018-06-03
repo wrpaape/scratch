@@ -1,6 +1,11 @@
 #ifndef CONVERT_BASE_GET_DIGIT_H
 #define CONVERT_BASE_GET_DIGIT_H
 
+/**
+ * @file
+ * @brief private header declaring get_digit() used by convert_base()
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif

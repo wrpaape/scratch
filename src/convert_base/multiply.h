@@ -1,6 +1,11 @@
 #ifndef CONVERT_BASE_MULTIPLY_H
 #define CONVERT_BASE_MULTIPLY_H
 
+/**
+ * @file
+ * @brief private header declaring multiply() used by convert_base()
+ */
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -14,7 +19,7 @@ extern "C" {
  * @param[in]     output_base the numerical base of the @p output
  * @param[in]     multiplier  the value to be multiplied by.  To avoid
  *                            arithmetic overflow @p multiplier should be `<=
- *                            ULONG_MAX / (output_base - 1)`
+ *                            ULONG_MAX/(output_base-1)`
  * @param[in]     output_end  pointer past the most significant digit of @p
  *                            output
  *
