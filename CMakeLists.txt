@@ -40,6 +40,9 @@ endif()
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_LIB_DIR})
 
+# set include directory
+include_directories(${PROJECT_INCLUDE_DIR})
+
 # enter
 add_subdirectory(src)
 add_subdirectory(docs)

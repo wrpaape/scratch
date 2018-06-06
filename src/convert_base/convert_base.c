@@ -1,10 +1,10 @@
-#include "convert_base.h"   /* convert_base() */
-#include "get_digit.h"	    /* get_digit() */
-#include "get_max_digits.h" /* get_max_digits() */
-#include "add.h"	    /* add() */
-#include "multiply.h"	    /* multiply() */
-#include <string.h>	    /* memset() */
-#include <limits.h>	    /* ULONG_MAX */
+#include "convert_base/convert_base.h"   /* convert_base() */
+#include "convert_base/get_max_digits.h" /* get_max_digits() */
+#include "get_digit.h"			 /* get_digit() */
+#include "add.h"			 /* add() */
+#include "multiply.h"			 /* multiply() */
+#include <string.h>			 /* memset() */
+#include <limits.h>			 /* ULONG_MAX */
 
 
 static const char token_table[] = {

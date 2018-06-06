@@ -1,9 +1,9 @@
-#include "convert_base.h"   // convert_base()
-#include "get_max_digits.h" // get_max_digits()
-#include <limits>           // std::numeric_limits
-#include <cstdlib>          // std::[exit|strtol]
-#include <cstring>          // std::strlen
-#include <iostream>         // std::[cout|cerr]
+#include "convert_base/convert_base.h"   // convert_base()
+#include "convert_base/get_max_digits.h" // get_max_digits()
+#include <limits>                        // std::numeric_limits
+#include <cstdlib>                       // std::[exit|strtol]
+#include <cstring>                       // std::strlen
+#include <iostream>                      // std::[cout|cerr]
 
 
 [[noreturn]] static inline void

@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"  // TEST, EXPECT_*
-#include "convert_base.h" // convert_base()
-#include <cstring>        // strlen
-#include <limits>         // std::numeric_limits
+#include "gtest/gtest.h"               // TEST, EXPECT_*
+#include "convert_base/convert_base.h" // convert_base()
+#include <cstring>                     // strlen
+#include <limits>                      // std::numeric_limits
 
 
 TEST(test_convert_base, base_validity)

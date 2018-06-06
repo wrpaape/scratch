@@ -1,5 +1,5 @@
-#include "get_max_digits.h"
-#include <math.h>
+#include "convert_base/get_max_digits.h" /* declaration */
+#include <math.h>			 /* log(), ceil() */
 
 size_t
 get_max_digits(size_t        input_length,
