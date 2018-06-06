@@ -1,6 +1,6 @@
-#include "gtest/gtest.h"    // TEST, ASSERT_*
-#include "get_max_digits.h" // get_max_digits()
-#include <cstring>          // strlen()
+#include "gtest/gtest.h"                 // TEST, ASSERT_*
+#include "convert_base/get_max_digits.h" // get_max_digits()
+#include <cstring>                       // strlen()
 
 TEST(test_get_max_digits, safe_estimation)
 {

@@ -1,10 +1,10 @@
-#include "convert_base.h"   /* convert_base() */
-#include "get_digit.h"	    /* get_digit() */
-#include "get_max_digits.h" /* get_max_digits() */
-#include "add.h"	    /* add() */
-#include "multiply.h"	    /* multiply() */
-#include <string.h>	    /* memset() */
-#include <limits.h>	    /* ULONG_MAX */
+#include "convert_base/convert_base.h"   /* convert_base() */
+#include "convert_base/get_max_digits.h" /* get_max_digits() */
+#include "get_digit.h"			 /* get_digit() */
+#include "add.h"			 /* add() */
+#include "multiply.h"			 /* multiply() */
+#include <string.h>			 /* memset() */
+#include <limits.h>			 /* ULONG_MAX */
 
 
 static const char token_table[] = {
@@ -88,15 +88,13 @@ convert_base(char       *output, unsigned char output_base,
 				      acc_mag,
 				      output_end);
 
-		/* add next accumulator into output */
-		unsigned char *restrict output_ptr = add(output_begin,
-							 output_base,
-							 acc);
-
-		/* if long addition produces a carry past the last most
-		 * significant digit of output, extend `output_end` */
-		if (output_ptr > output_end)
-			output_end = output_ptr;
+		/* add next accumulator into output
+		 * carry past most significant digit will never occur
+		 * immediately after a multiply of acc_mag where acc_mag > acc
+		 */
+		(void) add(output_begin,
+			   output_base,
+			   acc);
 	}
 
 	long output_length = (long) (output_end - output_begin);

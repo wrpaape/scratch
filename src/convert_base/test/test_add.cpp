@@ -1,7 +1,7 @@
-#include "gtest/gtest.h"  // TEST, ASSERT_*
-#include "add.h"          // add()
-#include "make_array.hpp" // make_array
-#include <type_traits>    // std::remove_const_t
+#include "gtest/gtest.h"       // TEST, ASSERT_*
+#include "add.h"               // add()
+#include "test/make_array.hpp" // make_array
+#include <type_traits>         // std::remove_const_t
 
 
 TEST(test_add, add_zero)
