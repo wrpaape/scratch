@@ -15,15 +15,15 @@ option(BUILD_TESTING "Enable unit testing." ON)
 # global directories
 set(PROJECT_SRC_DIR          ${PROJECT_SOURCE_DIR}/src)
 set(PROJECT_INCLUDE_DIR      ${PROJECT_SOURCE_DIR}/include)
-set(PROJECT_BUILD_DIR        ${PROJECT_SOURCE_DIR}/build)
 set(PROJECT_BIN_DIR          ${PROJECT_SOURCE_DIR}/bin)
 set(PROJECT_LIB_DIR          ${PROJECT_SOURCE_DIR}/lib)
 set(PROJECT_TEST_DIR         ${PROJECT_SOURCE_DIR}/test)
 set(PROJECT_CMAKE_DIR        ${PROJECT_SOURCE_DIR}/cmake)
 set(PROJECT_CMAKE_MODULE_DIR ${PROJECT_CMAKE_DIR}/module)
 
-# make cmake modules available to CMAKE_MODULE_PATH
+# make cmake modules available to include(), find_package()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_CMAKE_MODULE_DIR})
+list(APPEND CMAKE_PREFIX_PATH ${PROJECT_SOURCE_DIR})
 
 # set up common cmake module environment
 include(cmake_environ)
@@ -39,6 +39,7 @@ endif()
 # set output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BIN_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_LIB_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_LIB_DIR})
 
 # set include directory
 include_directories(${PROJECT_INCLUDE_DIR})

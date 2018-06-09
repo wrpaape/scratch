@@ -1,7 +1,7 @@
 include(have_c_array_range_initializer)
 
 set(CONVERT_BASE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
-set(CONVERT_BASE_LIBRARIES           m)
+set(CONVERT_BASE_LIBRARIES           convert_base m)
 
 include_directories(${CONVERT_BASE_INCLUDE_DIRECTORIES})
 
@@ -23,16 +23,16 @@ add_library(get_digit      OBJECT ${get_digit_source})
 add_library(get_max_digits OBJECT get_max_digits.c)
 add_library(add            OBJECT add.c)
 add_library(multiply       OBJECT multiply.c)
-add_library(convert_base   OBJECT convert_base.c)
+
+add_library(convert_base STATIC convert_base.c
+                                $<TARGET_OBJECTS:get_digit>
+                                $<TARGET_OBJECTS:get_max_digits>
+                                $<TARGET_OBJECTS:add>
+                                $<TARGET_OBJECTS:multiply>)
 
 add_executable(
     base_converter
     base_converter.cpp
-    $<TARGET_OBJECTS:convert_base>
-    $<TARGET_OBJECTS:get_digit>
-    $<TARGET_OBJECTS:get_max_digits>
-    $<TARGET_OBJECTS:add>
-    $<TARGET_OBJECTS:multiply>
 )
 target_link_libraries(base_converter ${CONVERT_BASE_LIBRARIES})
 

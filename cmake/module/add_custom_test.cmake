@@ -77,8 +77,7 @@ function(add_custom_test)
     endif()
 
 
-    list(APPEND CUSTOM_TEST_DEPENDENCIES ${CUSTOM_TEST_FRAMEWORK_NAME}
-                                         ${CUSTOM_TEST_FRAMEWORK_DEPENDENCIES})
+    list(APPEND CUSTOM_TEST_DEPENDENCIES ${CUSTOM_TEST_FRAMEWORK_DEPENDENCIES})
     if (CUSTOM_TEST_DEPENDENCIES)
         add_dependencies(${CUSTOM_TEST_NAME} ${CUSTOM_TEST_DEPENDENCIES})
     endif()

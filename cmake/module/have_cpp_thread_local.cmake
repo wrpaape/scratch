@@ -9,12 +9,12 @@ set(PROJECT_CMAKE_HAVE_CPP_THREAD_LOCAL_INCLUDED TRUE)
 # External API
 # ------------------------------------------------------------------------------
 function(set_have_cpp_thread_local)
-    set(build_dir ${PROJECT_CMAKE_BUILD_DIR}/have_cpp_thread_local)
-    set(src_dir   ${PROJECT_CMAKE_SRC_DIR}/have_cpp_thread_local)
+    set(bin_dir ${PROJECT_CMAKE_BIN_DIR})
+    set(src_dir ${PROJECT_CMAKE_SRC_DIR}/have_cpp_thread_local)
 
     try_compile(
         thread_local_compiled
-        ${build_dir}
+        ${bin_dir}
         ${src_dir}/test_have_cpp_thread_local.cpp
     )
 
