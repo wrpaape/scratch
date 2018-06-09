@@ -14,3 +14,4 @@ find_package(glad REQUIRED CONFIG)
 # scratch programs
 # ------------------------------------------------------------------------------
 add_subdirectory(convert_base)
+add_subdirectory(learn_opengl)
