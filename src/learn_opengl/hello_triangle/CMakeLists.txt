@@ -1,0 +1,1 @@
+add_executable(hello_triangle hello_triangle.cpp)

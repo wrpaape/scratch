@@ -4,3 +4,4 @@ link_libraries(glad::glad glfw ${OPENGL_LIBRARIES})
 
 
 add_subdirectory(hello_window)
+add_subdirectory(hello_triangle)
