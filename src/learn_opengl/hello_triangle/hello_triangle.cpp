@@ -1,4 +1,5 @@
 #include <cstdlib>      // exit()
+#include <cmath>        // sin()
 #include <iostream>     // std::cerr|cout|endl
 #include <iterator>     // std::size
 #include <glad/glad.h>  // gl*
@@ -110,8 +111,6 @@ unsigned int create_shader_program(Shaders... shaders)
 
     glLinkProgram(shader_program);
 
-    (glDeleteShader(shaders), ...);
-
     int linked;
     glGetProgramiv(shader_program, GL_LINK_STATUS, &linked);
     if (!linked) {
@@ -123,10 +122,27 @@ unsigned int create_shader_program(Shaders... shaders)
     return shader_program;
 }
 
+template<typename ...Shaders>
+void delete_shaders(Shaders... shaders)
+{
+    (glDeleteShader(shaders), ...);
+}
+
+
 inline void process_input(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
+inline int get_uniform(int         shader_program,
+                       const char *name)
+{
+    int uniform = glGetUniformLocation(shader_program, name);
+    if (uniform == -1)
+        exit_on_failure("glGetUniformLocation() failure", 5);
+
+    return uniform;
 }
 
 } // namespace
@@ -165,10 +181,11 @@ int main()
         GL_FRAGMENT_SHADER,
         "\n# version 330 core"
         "\nout vec4 FragColor;"
+        "\nuniform float alpha;"
         "\n"
         "\nvoid main()"
         "\n{"
-        "\n    FragColor = vec4(1.0f, 1.0f, 0.0f, 0.2f);"
+        "\n    FragColor = vec4(1.0f, 1.0f, 0.0f, alpha);"
         "\n}"
     );
 
@@ -178,6 +195,11 @@ int main()
 
     unsigned int yellow_shader_program = create_shader_program(vertex_shader,
                                                                yellow_fragment_shader);
+
+    delete_shaders(vertex_shader, orange_fragment_shader, yellow_fragment_shader);
+
+    // grab the "alpha" uniform
+    int alpha_uniform = get_uniform(yellow_shader_program, "alpha");
 
     // create the vertex array, vertex buffer, and element buffer objects
     unsigned int vertex_arrays[2];
@@ -228,6 +250,10 @@ int main()
     // turn on wireframe mode
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    // enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // check for escape
@@ -251,14 +277,18 @@ int main()
         glDrawArrays(GL_TRIANGLES, 0, std::size(corners));
         glBindVertexArray(0);
 
+        // update the uniform alpha
+        float alpha = (sin(glfwGetTime()) / 2.0) + 0.5;
+        glUniform1f(alpha_uniform, alpha);
+
         // check and call events and swap the buffers
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
     // free vertex buffer and vertex array
-    glDeleteBuffers(3,      buffers);
-    glDeleteVertexArrays(2, vertex_arrays);
+    glDeleteBuffers(std::size(buffers),            buffers);
+    glDeleteVertexArrays(std::size(vertex_arrays), vertex_arrays);
 
     // free GLFW resources and exit
     glfwTerminate();

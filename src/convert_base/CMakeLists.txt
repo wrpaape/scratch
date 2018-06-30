@@ -1,6 +1,7 @@
 include(have_c_array_range_initializer)
 
-set(CONVERT_BASE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR})
+set(CONVERT_BASE_INCLUDE_DIRECTORIES ${PROJECT_INCLUDE_DIR}
+                                     ${CMAKE_CURRENT_LIST_DIR})
 set(CONVERT_BASE_LIBRARIES           convert_base m)
 
 include_directories(${CONVERT_BASE_INCLUDE_DIRECTORIES})

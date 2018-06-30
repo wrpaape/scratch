@@ -3,7 +3,7 @@
 
 /**
  * @file
- * @brief header declaring convert_base() used for expressing a number
+ * @brief header declaring convert_base(), used for expressing a number
  *        whose representation is known in one numerical base in an alternative
  *        numerical base
  */
